@@ -1,0 +1,50 @@
+-- Cleaning Data in SQL Queries
+
+SELECT * 
+FROM master.dbo.NashvilleHousing 
+
+-- Standardized Sale Format
+
+SELECT SaleDateConverted, CONVERT (Date,SaleDate)
+FROM master.dbo.NashvilleHousing 
+
+UPDATE master.dbo.NashvilleHousing
+SET SaleDate = CONVERT (Date,SaleDate)
+
+ALTER TABLE master.dbo.NashVilleHousing
+ADD SaleDateConverted Date
+
+UPDATE NashvilleHousing
+SET SaleDateConverted = CONVERT (Date,SaleDate)
+
+
+-- Populate Property Address Data
+
+SELECT *
+FROM master.dbo.NashvilleHousing 
+--Where PropertyAddress IS NULL
+ORDER BY ParcelID
+
+
+SELECT a.ParcelId, a.PropertyAddress, b.ParcelID, b.PropertyAddress, ISNULL (a.PropertyAddress, b.Propertyaddress)
+FROM master.dbo.NashvilleHousing a
+JOIN master.dbo.NashvilleHousing b
+ON a.ParcelId = b.ParcelId
+AND a.UniqueID <> b.UniqueID
+WHERE a.PropertyAddress IS NULL
+
+UPDATE a
+SET PropertyAddress = ISNULL (a.PropertyAddress, b.Propertyaddress)
+FROM master.dbo.NashvilleHousing a
+JOIN master.dbo.NashvilleHousing b
+ON a.ParcelId = b.ParcelId
+AND a.UniqueID <> b.UniqueID
+WHERE a.PropertyAddress IS NULL
+
+
+-- Breaking out address into Individual Columns (Address, City, State)
+
+SELECT Propertyaddress
+FROM master.dbo.NashvilleHousing 
+--Where PropertyAddress IS NULL
+--ORDER BY ParcelID
