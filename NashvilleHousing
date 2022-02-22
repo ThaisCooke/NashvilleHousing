@@ -48,3 +48,35 @@ SELECT Propertyaddress
 FROM master.dbo.NashvilleHousing 
 --Where PropertyAddress IS NULL
 --ORDER BY ParcelID
+
+SELECT 
+SUBSTRING (PropertyAddress, 1, CHARINDEX (',', PropertyAddress) - 1) as Address
+,SUBSTRING (PropertyAddress, CHARINDEX (',', PropertyAddress) + 1, LEN(PropertyAddress)) as Address
+FROM master.dbo.NashvilleHousing 
+
+ALTER TABLE master.dbo.NashvilleHousing 
+ADD PropertySplitAddress Nvarchar (255);
+
+UPDATE master.dbo.NashvilleHousing 
+SET PropertySplitAddress = SUBSTRING (PropertyAddress, 1, CHARINDEX (',', PropertyAddress) - 1) 
+
+ALTER TABLE master.dbo.NashvilleHousing 
+ADD PropertySplitCity Nvarchar (255);
+
+UPDATE master.dbo.NashvilleHousing 
+SET PropertySplitCity = SUBSTRING (PropertyAddress, CHARINDEX (',', PropertyAddress) + 1, LEN (PropertyAddress)) 
+
+SELECT *
+FROM master.dbo.NashvilleHousing 
+
+
+-- Breaking out address into Individual Columns (Address, City, State) Using Parsename
+
+SELECT OwnerAddress
+FROM master.dbo.NashvilleHousing 
+
+SELECT 
+PARSENAME(REPLACE(OwnerAddress, ',', '.'), 3)
+,PARSENAME (REPLACE(OwnerAddress, ',', '.'), 2)
+,PARSENAME (REPLACE(OwnerAddress, ',', '.'), 1)
+FROM master.dbo.NashvilleHousing 
