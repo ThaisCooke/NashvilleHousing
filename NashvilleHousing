@@ -80,3 +80,47 @@ PARSENAME(REPLACE(OwnerAddress, ',', '.'), 3)
 ,PARSENAME (REPLACE(OwnerAddress, ',', '.'), 2)
 ,PARSENAME (REPLACE(OwnerAddress, ',', '.'), 1)
 FROM master.dbo.NashvilleHousing 
+
+ALTER TABLE master.dbo.NashvilleHousing 
+ADD OwnerSplitAddress Nvarchar (255);
+
+UPDATE master.dbo.NashvilleHousing 
+SET OwnerSplitAddress = PARSENAME(REPLACE(OwnerAddress, ',', '.'), 3)
+
+ALTER TABLE master.dbo.NashvilleHousing 
+ADD OwnerSplitCity Nvarchar (255);
+
+UPDATE master.dbo.NashvilleHousing 
+SET OwnerSplitCity = PARSENAME(REPLACE(OwnerAddress, ',', '.'), 2)
+
+ALTER TABLE master.dbo.NashvilleHousing 
+ADD OwnerSplitState Nvarchar (255);
+
+UPDATE master.dbo.NashvilleHousing 
+SET OwnerSplitState = PARSENAME(REPLACE(OwnerAddress, ',', '.'), 1)
+
+SELECT *
+FROM master.dbo.NashvilleHousing 
+
+
+-- CHANGE Y and N to YES and NO in "Sold as Vacant" field
+
+SELECT DISTINCT(SoldAsVacant), COUNT(SoldAsVacant)
+FROM master.dbo.NashvilleHousing
+GROUP BY SoldAsVacant
+ORDER BY 2
+
+SELECT SoldAsVacant,
+CASE WHEN SoldAsVacant = 'Y' Then 'Yes'
+WHEN SoldAsVacant = 'N' THEN 'No'
+ELSE SoldAsVacant
+END
+FROM  master.dbo.NashvilleHousing
+
+UPDATE  master.dbo.NashvilleHousing
+SET SoldAsVacant =
+CASE WHEN SoldAsVacant = 'Y' Then 'Yes'
+WHEN SoldAsVacant = 'N' THEN 'No'
+ELSE SoldAsVacant
+END
+FROM  master.dbo.NashvilleHousing
