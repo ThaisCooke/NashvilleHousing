@@ -124,3 +124,35 @@ WHEN SoldAsVacant = 'N' THEN 'No'
 ELSE SoldAsVacant
 END
 FROM  master.dbo.NashvilleHousing
+
+-- Remove Duplicates
+
+WITH RowNumCTE AS (
+SELECT *,
+ROW_NUMBER () OVER (
+PARTITION BY ParcelID,
+PropertyAddress,
+SalePrice,
+SaleDate,
+LegalReference
+ORDER BY
+UniqueID
+) row_num
+FROM master.dbo.NashvilleHousing
+--ORDER BY ParcelID
+)
+SELECT *
+FROm RowNumCTE
+WHERE row_Num > 1
+ORDER BY PropertyAddress
+
+-- Delect Unused Columns
+
+SELECT *
+FROM master.dbo.NashvilleHousing
+
+ALTER TABLE master.dbo.NashvilleHousing
+DROP COLUMN OwnerAddress, TaxDistrict, PropertyAddress
+
+ALTER TABLE master.dbo.NashvilleHousing
+DROP COLUMN SaleDate
